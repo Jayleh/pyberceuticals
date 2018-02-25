@@ -178,70 +178,22 @@ unique_city_df = pd.DataFrame({'driver_count': driver_count})
 
 # Reset index
 unique_city_df = unique_city_df.reset_index()
-unique_city_df.head()
+unique_city_df.count()
 ```
 
 
 
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>city</th>
-      <th>driver_count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Alvarezhaven</td>
-      <td>21</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Alyssaberg</td>
-      <td>67</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Anitamouth</td>
-      <td>16</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Antoniomouth</td>
-      <td>21</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Aprilchester</td>
-      <td>49</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+    city            125
+    driver_count    125
+    dtype: int64
 
 
 
 
 ```python
 # Merge to add city type to unique city dataframe
-new_city_df = pd.merge(unique_city_df, city_df, on='city')
+new_city_df = pd.merge(unique_city_df, city_df, on='city', how='left')
 
 # Drop driver count column from city df (driver_count_y)
 new_city_df = new_city_df[['city', 'driver_count_x', 'type']]
@@ -411,87 +363,21 @@ ride_df.count()
 ```python
 # Merge with left join to create pyber dataframe
 pyber_df = pd.merge(ride_df, new_city_df, how='left')
-pyber_df.head()
+
+# They
+pyber_df.count()
 ```
 
 
 
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>city</th>
-      <th>date</th>
-      <th>fare</th>
-      <th>ride_id</th>
-      <th>driver_count</th>
-      <th>type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Sarabury</td>
-      <td>2016-01-16 13:49:27</td>
-      <td>38.35</td>
-      <td>5403689035038</td>
-      <td>46</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>South Roy</td>
-      <td>2016-01-02 18:42:34</td>
-      <td>17.49</td>
-      <td>4036272335942</td>
-      <td>35</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Wiseborough</td>
-      <td>2016-01-21 17:35:29</td>
-      <td>44.18</td>
-      <td>3645042422587</td>
-      <td>55</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Spencertown</td>
-      <td>2016-07-31 14:53:22</td>
-      <td>6.87</td>
-      <td>2242596575892</td>
-      <td>68</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Nguyenbury</td>
-      <td>2016-07-09 04:42:44</td>
-      <td>6.28</td>
-      <td>1543057793673</td>
-      <td>8</td>
-      <td>Urban</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+    city            2407
+    date            2407
+    fare            2407
+    ride_id         2407
+    driver_count    2407
+    type            2407
+    dtype: int64
 
 
 
@@ -583,7 +469,25 @@ fare_ride.head()
 ```python
 # Merge with new city df
 city_summary = pd.merge(fare_ride, new_city_df, how='left')
-city_summary.head()
+city_summary.count()
+```
+
+
+
+
+    city                126
+    avg_fare            126
+    total_ride_count    126
+    driver_count        126
+    type                126
+    dtype: int64
+
+
+
+
+```python
+# Show duplicate cities
+city_summary[city_summary['city'].duplicated(keep=False)]
 ```
 
 
@@ -616,44 +520,20 @@ city_summary.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>Alvarezhaven</td>
-      <td>23.928710</td>
-      <td>31</td>
-      <td>21</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Alyssaberg</td>
-      <td>20.609615</td>
-      <td>26</td>
-      <td>67</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Anitamouth</td>
-      <td>37.315556</td>
-      <td>9</td>
-      <td>16</td>
+      <th>72</th>
+      <td>Port James</td>
+      <td>31.806562</td>
+      <td>64</td>
+      <td>18</td>
       <td>Suburban</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>Antoniomouth</td>
-      <td>23.625000</td>
-      <td>22</td>
-      <td>21</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Aprilchester</td>
-      <td>21.981579</td>
-      <td>19</td>
-      <td>49</td>
-      <td>Urban</td>
+      <th>73</th>
+      <td>Port James</td>
+      <td>31.806562</td>
+      <td>64</td>
+      <td>18</td>
+      <td>Suburban</td>
     </tr>
   </tbody>
 </table>
@@ -663,5 +543,102 @@ city_summary.head()
 
 
 ```python
-# Need to set index by type, then make handlers and plots for each type, then can plot
+# Drop duplicate city
+city_summary = city_summary.drop_duplicates('city', keep='first')
+city_summary.count()
 ```
+
+
+
+
+    city                125
+    avg_fare            125
+    total_ride_count    125
+    driver_count        125
+    type                125
+    dtype: int64
+
+
+
+
+```python
+# Need to set index by type, then make handlers and plots for each type, then can plot
+city_summary = city_summary.set_index(['type'])
+city_summary.head()
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>city</th>
+      <th>avg_fare</th>
+      <th>total_ride_count</th>
+      <th>driver_count</th>
+    </tr>
+    <tr>
+      <th>type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Urban</th>
+      <td>Alvarezhaven</td>
+      <td>23.928710</td>
+      <td>31</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <th>Urban</th>
+      <td>Alyssaberg</td>
+      <td>20.609615</td>
+      <td>26</td>
+      <td>67</td>
+    </tr>
+    <tr>
+      <th>Suburban</th>
+      <td>Anitamouth</td>
+      <td>37.315556</td>
+      <td>9</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>Urban</th>
+      <td>Antoniomouth</td>
+      <td>23.625000</td>
+      <td>22</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <th>Urban</th>
+      <td>Aprilchester</td>
+      <td>21.981579</td>
+      <td>19</td>
+      <td>49</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
