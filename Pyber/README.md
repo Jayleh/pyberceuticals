@@ -87,36 +87,7 @@ city_df.head()
 
 
 ```python
-# Check column counts
-city_df.count()
-```
-
-
-
-
-    city            126
-    driver_count    126
-    type            126
-    dtype: int64
-
-
-
-
-```python
-# Check unique cities
-len(city_df['city'].unique())
-```
-
-
-
-
-    125
-
-
-
-
-```python
-# Show duplicate cities
+# Show duplicate cities, will combine later with groupby and .sum()
 city_df[city_df['city'].duplicated(keep=False)]
 ```
 
@@ -192,15 +163,31 @@ unique_city_df.count()
 
 
 ```python
-# Merge to add city type to unique city dataframe
-new_city_df = pd.merge(unique_city_df, city_df, on='city', how='left')
+# Merge to add city type to unique city dataframe, but then need to drop duplicate city
+new_city_df = pd.merge(unique_city_df, city_df, on='city')
 
 # Drop driver count column from city df (driver_count_y)
 new_city_df = new_city_df[['city', 'driver_count_x', 'type']]
 
 # Rename driver_count_x column
 new_city_df = new_city_df.rename(columns={'driver_count_x': 'driver_count'})
-new_city_df.head()
+new_city_df.count()
+```
+
+
+
+
+    city            126
+    driver_count    126
+    type            126
+    dtype: int64
+
+
+
+
+```python
+# Check duplicate city
+new_city_df[new_city_df['city'].duplicated(keep=False)]
 ```
 
 
@@ -231,38 +218,37 @@ new_city_df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>Alvarezhaven</td>
-      <td>21</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Alyssaberg</td>
-      <td>67</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Anitamouth</td>
-      <td>16</td>
+      <th>72</th>
+      <td>Port James</td>
+      <td>18</td>
       <td>Suburban</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>Antoniomouth</td>
-      <td>21</td>
-      <td>Urban</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Aprilchester</td>
-      <td>49</td>
-      <td>Urban</td>
+      <th>73</th>
+      <td>Port James</td>
+      <td>18</td>
+      <td>Suburban</td>
     </tr>
   </tbody>
 </table>
 </div>
+
+
+
+
+```python
+# Drop duplicate city
+new_city_df = new_city_df.drop_duplicates('city', keep='first')
+new_city_df.count()
+```
+
+
+
+
+    city            125
+    driver_count    125
+    type            125
+    dtype: int64
 
 
 
@@ -344,7 +330,7 @@ ride_df.head()
 
 
 ```python
-# Check column counts
+# Check ride dataframe column counts
 ride_df.count()
 ```
 
@@ -361,10 +347,8 @@ ride_df.count()
 
 
 ```python
-# Merge with left join to create pyber dataframe
-pyber_df = pd.merge(ride_df, new_city_df, how='left')
-
-# They
+# Merge by left join
+pyber_df = pd.merge(ride_df, city_df, how='left')
 pyber_df.count()
 ```
 
@@ -381,18 +365,220 @@ pyber_df.count()
 
 
 
+
+```python
+# Group by ride id
+group_id = pyber_df.groupby(['ride_id'])
+
+# Add driver count for duplicate city (Port James)
+driver_count = group_id['driver_count'].sum()
+
+# Create data city dataframe
+unique_id = pd.DataFrame({'driver_count': driver_count})
+
+# Reset index
+unique_id = unique_id.reset_index()
+unique_id.count()
+```
+
+
+
+
+    ride_id         2375
+    driver_count    2375
+    dtype: int64
+
+
+
+
+```python
+# Observe dataframe
+unique_id.head()
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ride_id</th>
+      <th>driver_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2238752751</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7522667629</td>
+      <td>19</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>11622863980</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12105457917</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>18075235678</td>
+      <td>66</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Drop duplicates from pyber dataframe, preserving columns for merge on ride id
+drop_dup_pyber = pyber_df.drop_duplicates('ride_id', keep='first')
+drop_dup_pyber.count()
+```
+
+
+
+
+    city            2375
+    date            2375
+    fare            2375
+    ride_id         2375
+    driver_count    2375
+    type            2375
+    dtype: int64
+
+
+
+
+```python
+# Merge on ride
+merge_pyber = pd.merge(unique_id, drop_dup_pyber, on='ride_id')
+
+# Reorder columns and drop incorrect driver count column (driver_count_y)
+clean_pyber = merge_pyber.iloc[:, [2, 3, 4, 1, 0, 6]]
+
+# Rename driver count column
+clean_pyber = clean_pyber.rename(columns={'driver_count_x': 'driver_count'})
+clean_pyber.head()
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>city</th>
+      <th>date</th>
+      <th>fare</th>
+      <th>driver_count</th>
+      <th>ride_id</th>
+      <th>type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>West Evan</td>
+      <td>2016-02-03 15:50:57</td>
+      <td>17.57</td>
+      <td>4</td>
+      <td>2238752751</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>South Gracechester</td>
+      <td>2016-09-08 06:53:25</td>
+      <td>23.25</td>
+      <td>19</td>
+      <td>7522667629</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Port Alexandria</td>
+      <td>2016-08-10 12:16:09</td>
+      <td>31.75</td>
+      <td>27</td>
+      <td>11622863980</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Kennethburgh</td>
+      <td>2016-02-29 21:50:59</td>
+      <td>47.48</td>
+      <td>3</td>
+      <td>12105457917</td>
+      <td>Rural</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Lisaville</td>
+      <td>2016-09-30 22:29:40</td>
+      <td>31.06</td>
+      <td>66</td>
+      <td>18075235678</td>
+      <td>Urban</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 # Bubble Plot of Ride Sharing Data
 
 
 ```python
 # Group by city
-group_pyber = pyber_df.groupby(['city'])
+group_city = clean_pyber.groupby(['city'])
 
 # Grab mean fare for each city
-avg_fare = group_pyber['fare'].mean()
+avg_fare = group_city['fare'].mean()
 
 # Grab count of rides for each city
-total_ride = group_pyber['ride_id'].count()
+total_ride = group_city['ride_id'].count()
 
 # Create dataframe from group by object
 fare_ride = pd.DataFrame({'avg_fare': avg_fare, 'total_ride_count': total_ride})
@@ -475,82 +661,6 @@ city_summary.count()
 
 
 
-    city                126
-    avg_fare            126
-    total_ride_count    126
-    driver_count        126
-    type                126
-    dtype: int64
-
-
-
-
-```python
-# Show duplicate cities
-city_summary[city_summary['city'].duplicated(keep=False)]
-```
-
-
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>city</th>
-      <th>avg_fare</th>
-      <th>total_ride_count</th>
-      <th>driver_count</th>
-      <th>type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>72</th>
-      <td>Port James</td>
-      <td>31.806562</td>
-      <td>64</td>
-      <td>18</td>
-      <td>Suburban</td>
-    </tr>
-    <tr>
-      <th>73</th>
-      <td>Port James</td>
-      <td>31.806562</td>
-      <td>64</td>
-      <td>18</td>
-      <td>Suburban</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-# Drop duplicate city
-city_summary = city_summary.drop_duplicates('city', keep='first')
-city_summary.count()
-```
-
-
-
-
     city                125
     avg_fare            125
     total_ride_count    125
@@ -562,7 +672,7 @@ city_summary.count()
 
 
 ```python
-# Need to set index by type, then make handlers and plots for each type, then can plot
+# Set index to city type
 city_summary = city_summary.set_index(['type'])
 city_summary.head()
 ```
@@ -680,7 +790,7 @@ rural = plt.scatter(rural_x, rural_y, marker="o", facecolors="gold", edgecolors=
                     alpha=0.8, label="Rural")
 
 # Set the upper and lower limits of our axes
-plt.xlim(2.5,70)
+plt.xlim(2.5,37.5)
 plt.ylim(17.5, 45)
 
 # Create chart title, legend title, x label, and y label
@@ -708,5 +818,7 @@ plt.show()
 ```
 
 
-![png](Images/output_19_0.png)
+![png](Images/pyberBubbleChart.png)
 
+
+# Total Fares by City Type
