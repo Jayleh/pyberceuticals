@@ -655,12 +655,12 @@ rural_df = city_summary.loc['Rural', ['avg_fare', 'total_ride_count', 'driver_co
 ```python
 # Assign bubble x axes
 urban_x = urban_df['total_ride_count']
-suburb_x = suburban_df['total_ride_count']
+suburb_x = suburb_df['total_ride_count']
 rural_x = rural_df['total_ride_count']
 
 # Assign bubble y axes
 urban_y = urban_df['avg_fare']
-suburb_y = suburban_df['avg_fare']
+suburb_y = suburb_df['avg_fare']
 rural_y = rural_df['avg_fare']
 
 # Assign bubble sizes
@@ -703,7 +703,7 @@ ax.set_axisbelow(True)
 
 ```python
 # Save figure and show
-plt.savefig('Pyber Bubble Chart.png')
+plt.savefig('Images/pyberBubbleChart.png')
 plt.show()
 ```
 
