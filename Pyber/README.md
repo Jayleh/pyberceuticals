@@ -708,5 +708,5 @@ plt.show()
 ```
 
 
-![png](output_19_0.png)
+![png](Images/output_19_0.png)
 
