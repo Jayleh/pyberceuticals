@@ -774,9 +774,9 @@ suburb_y = suburb_df['avg_fare']
 rural_y = rural_df['avg_fare']
 
 # Assign bubble sizes
-urban_s = urban_df['driver_count']*15
-suburb_s = suburb_df['driver_count']*15
-rural_s = rural_df['driver_count']*15
+urban_s = urban_df['driver_count']*7
+suburb_s = suburb_df['driver_count']*7
+rural_s = rural_df['driver_count']*7
 
 # Set figure size
 plt.figure(figsize=(8, 5))
@@ -790,7 +790,7 @@ rural = plt.scatter(rural_x, rural_y, marker="o", facecolors="gold", edgecolors=
                     alpha=0.8, label="Rural")
 
 # Set the upper and lower limits of our axes
-plt.xlim(2.5,37.5)
+plt.xlim(2.5,36)
 plt.ylim(17.5, 45)
 
 # Create chart title, legend title, x label, and y label
@@ -812,13 +812,430 @@ ax.set_axisbelow(True)
 
 
 ```python
-# Save figure and show
-plt.savefig('Images/pyberBubbleChart.png')
+# Pyber Ride Sharing Data
+plt.savefig('Images/pyberRideSharing.png')
 plt.show()
 ```
 
 
-![png](Images/pyberBubbleChart.png)
+![png](Images/pyberRideSharing.png)
 
 
 # Total Fares by City Type
+
+
+```python
+clean_pyber.head()
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>city</th>
+      <th>date</th>
+      <th>fare</th>
+      <th>driver_count</th>
+      <th>ride_id</th>
+      <th>type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>West Evan</td>
+      <td>2016-02-03 15:50:57</td>
+      <td>17.57</td>
+      <td>4</td>
+      <td>2238752751</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>South Gracechester</td>
+      <td>2016-09-08 06:53:25</td>
+      <td>23.25</td>
+      <td>19</td>
+      <td>7522667629</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Port Alexandria</td>
+      <td>2016-08-10 12:16:09</td>
+      <td>31.75</td>
+      <td>27</td>
+      <td>11622863980</td>
+      <td>Suburban</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Kennethburgh</td>
+      <td>2016-02-29 21:50:59</td>
+      <td>47.48</td>
+      <td>3</td>
+      <td>12105457917</td>
+      <td>Rural</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Lisaville</td>
+      <td>2016-09-30 22:29:40</td>
+      <td>31.06</td>
+      <td>66</td>
+      <td>18075235678</td>
+      <td>Urban</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Group by type
+group_type = clean_pyber.groupby(['type'])
+
+# Grab sum of fares
+total_fare = group_type['fare'].sum()
+
+# Create dataframe
+fares_by_type = pd.DataFrame({'total_fare': total_fare})
+
+# Reset index
+fares_by_type = fares_by_type.reset_index()
+fares_by_type
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>type</th>
+      <th>total_fare</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Rural</td>
+      <td>4255.09</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suburban</td>
+      <td>19317.88</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Urban</td>
+      <td>40078.34</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Labels for the sections
+labels = fares_by_type['type']
+
+# Values of each section
+sizes = fares_by_type['total_fare']
+
+# Colors for the city types
+colors = ["gold", "lightskyblue", "lightcoral"]
+
+# Explode on "Urban" section
+explode = (0, 0, 0.1)
+```
+
+
+```python
+# Create pie chart
+plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+        autopct="%1.1f%%", shadow=True, startangle=140)
+
+# Label title
+plt.title("% of Total Fares by City Type")
+
+# Have equal axes
+# plt.axis("equal")
+```
+
+
+
+
+    Text(0.5,1,'% of Total Fares by City Type')
+
+
+
+
+```python
+# % of Total Fares by City Type
+plt.savefig('Images/totalFaresbyType.png')
+plt.show()
+```
+
+
+![png](Images/totalFaresbyType.png)
+
+
+# Total Rides by City Type
+
+
+```python
+# Group by type
+group_type = clean_pyber.groupby(['type'])
+
+# Grab count of rides
+total_rides = group_type['ride_id'].count()
+
+# Create dataframe
+rides_by_type = pd.DataFrame({'total_rides': total_rides})
+
+# Reset index
+rides_by_type = rides_by_type.reset_index()
+rides_by_type
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>type</th>
+      <th>total_rides</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Rural</td>
+      <td>125</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suburban</td>
+      <td>625</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Urban</td>
+      <td>1625</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Labels for the sections
+labels = rides_by_type['type']
+
+# Values of each section
+sizes = rides_by_type['total_rides']
+
+# Colors for the city types
+colors = ["gold", "lightskyblue", "lightcoral"]
+
+# Explode on "Urban" section
+explode = (0, 0, 0.1)
+```
+
+
+```python
+# Create pie chart
+plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+        autopct="%1.1f%%", shadow=True, startangle=140)
+
+# Label title
+plt.title("% of Total Rides by City Type")
+
+# Set equal axes
+# plt.axis("equal")
+```
+
+
+
+
+    Text(0.5,1,'% of Total Rides by City Type')
+
+
+
+
+```python
+# % of Total Rides by City Type
+plt.savefig('Images/totalRidesbyType.png')
+plt.show()
+```
+
+
+![png](Images/totalRidesbyType.png)
+
+
+# Total Drivers by City Type
+
+
+```python
+# Group by city type
+group_city = clean_pyber.groupby(['type'])
+
+# Grab sum of drivers
+total_drivers = group_city['driver_count'].sum()
+
+# Create dataframe
+drivers_by_type = pd.DataFrame({'total_drivers': total_drivers})
+
+# Reset index
+drivers_by_type = drivers_by_type.reset_index()
+drivers_by_type
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>type</th>
+      <th>total_drivers</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Rural</td>
+      <td>727</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suburban</td>
+      <td>9730</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Urban</td>
+      <td>64501</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Labels for the sections
+labels = drivers_by_type['type']
+
+# Values of each section
+sizes = drivers_by_type['total_drivers']
+
+# Colors for the city types
+colors = ["gold", "lightskyblue", "lightcoral"]
+
+# Explode on "Urban" section
+explode = (0, 0, 0.1)
+```
+
+
+```python
+# Create pie chart
+plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+        autopct="%1.1f%%", shadow=True, startangle=140)
+
+# Label title
+plt.title("% of Total Drivers by City Type")
+
+# Set equal axes
+# plt.axis("equal")
+```
+
+
+
+
+    Text(0.5,1,'% of Total Drivers by City Type')
+
+
+
+
+```python
+# % of Total Drivers by City Type
+plt.savefig('Images/totalDriversbyType.png')
+plt.show()
+```
+
+
+![png](Images/totalDriversbyType.png)
+
