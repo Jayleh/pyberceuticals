@@ -818,12 +818,12 @@ ax.set_axisbelow(True)
 
 ```python
 # Pyber Ride Sharing Data
-plt.savefig('Images/pyberRideSharing.png')
+plt.savefig('images/pyberRideSharing.png')
 plt.show()
 ```
 
 
-![png](Images/pyberRideSharing.png)
+![png](images/pyberRideSharing.png)
 
 
 # Total Fares by City Type
@@ -1015,12 +1015,12 @@ plt.title("% of Total Fares by City Type")
 
 ```python
 # % of Total Fares by City Type
-plt.savefig('Images/totalFaresbyType.png')
+plt.savefig('images/totalFaresbyType.png')
 plt.show()
 ```
 
 
-![png](Images/totalFaresbyType.png)
+![png](images/totalFaresbyType.png)
 
 
 # Total Rides by City Type
@@ -1126,12 +1126,12 @@ plt.title("% of Total Rides by City Type")
 
 ```python
 # % of Total Rides by City Type
-plt.savefig('Images/totalRidesbyType.png')
+plt.savefig('images/totalRidesbyType.png')
 plt.show()
 ```
 
 
-![png](Images/totalRidesbyType.png)
+![png](images/totalRidesbyType.png)
 
 
 # Total Drivers by City Type
@@ -1237,10 +1237,10 @@ plt.title("% of Total Drivers by City Type")
 
 ```python
 # % of Total Drivers by City Type
-plt.savefig('Images/totalDriversbyType.png')
+plt.savefig('images/totalDriversbyType.png')
 plt.show()
 ```
 
 
-![png](Images/totalDriversbyType.png)
+![png](images/totalDriversbyType.png)
 
