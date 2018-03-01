@@ -1,4 +1,9 @@
 
+# Observable Trends
+###### 1. The ride sharing data bubble chart shows distinct differences between urban, suburban, and rural city types. It seems less densely populated cities have higher average fares than those with a higher population (more people, lower average fare).
+###### 2. According to the Pyber data, urban cities contributed to 63% of the total fares while suburban and rural contributed to 30.3% and 6.7% respectively.
+###### 3. Cities with higher populations tend to have more rides and drivers than cities with lower populations.
+
 
 ```python
 # Import dependencies
@@ -793,7 +798,7 @@ rural = plt.scatter(rural_x, rural_y, marker="o", facecolors="gold", edgecolors=
 plt.xlim(2.5,36)
 plt.ylim(17.5, 45)
 
-# Create chart title, legend title, x label, and y label
+# Create chart title, x label, and y label
 plt.title("Pyber Ride Sharing Data")
 plt.xlabel("Total Number of Rides (Per City)")
 plt.ylabel("Average Fare ($)")
