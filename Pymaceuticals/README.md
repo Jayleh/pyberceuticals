@@ -903,7 +903,7 @@ plt.show()
 ```
 
 
-![png](output_17_0.png)
+![png](images/tumorVolume.png)
 
 
 # Metastatic Response to Treatment
@@ -1215,7 +1215,7 @@ plt.show()
 ```
 
 
-![png](output_21_0.png)
+![png](images/metaSites.png)
 
 
 # Survival Rates
@@ -1527,7 +1527,7 @@ plt.show()
 ```
 
 
-![png](output_25_0.png)
+![png](images/survRate.png)
 
 
 # Summary Bar Graph
@@ -1894,5 +1894,5 @@ plt.show()
 ```
 
 
-![png](output_30_0.png)
+![png](images/percTumorChange.png)
 
