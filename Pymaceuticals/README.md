@@ -897,12 +897,13 @@ plt.ylabel("Tumor Volume (mm3)")
 # Create legend
 plt.legend(handles=[cap_tum, inf_tum, ket_tum, pla_tum], loc="best")
 
-# Show
+# Tumor Response to Treatment
+plt.savefig('images/tumorVolume.png')
 plt.show()
 ```
 
 
-![png](images/output_17_0.png)
+![png](output_17_0.png)
 
 
 # Metastatic Response to Treatment
@@ -1208,12 +1209,13 @@ plt.ylabel("Met. Sites")
 # Create legend
 plt.legend(handles=[cap_met, inf_met, ket_met, pla_met], loc="best")
 
-# Show
+# Metatstatic Spread During Treatment
+plt.savefig('images/metaSites.png')
 plt.show()
 ```
 
 
-![png](images/output_21_0.png)
+![png](output_21_0.png)
 
 
 # Survival Rates
@@ -1507,7 +1509,7 @@ pla_surv, = plt.plot(time, placebo, color="black", marker='d', linestyle='--', l
 plt.xlim(0,45)
 plt.ylim(30,105)
 
-# Add in a grid for the chart
+# Add gridlines
 ax = plt.gca()
 ax.grid(linestyle='--')
 
@@ -1519,12 +1521,378 @@ plt.ylabel("Survival Rate (%)")
 # Create legend
 plt.legend(handles=[cap_surv, inf_surv, ket_surv, pla_surv], loc="lower left")
 
-# Show
+# Survial During Treatment
+plt.savefig('images/survRate.png')
 plt.show()
 ```
 
 
-![png](images/output_25_0.png)
+![png](output_25_0.png)
 
 
 # Summary Bar Graph
+
+
+```python
+# Check unstack tumor dataframe
+unstack_tumor
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Drug</th>
+      <th>Capomulin</th>
+      <th>Ceftamin</th>
+      <th>Infubinol</th>
+      <th>Ketapril</th>
+      <th>Naftisol</th>
+      <th>Placebo</th>
+      <th>Propriva</th>
+      <th>Ramicane</th>
+      <th>Stelasyn</th>
+      <th>Zoniferol</th>
+    </tr>
+    <tr>
+      <th>Timepoint</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+      <td>45.000000</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>44.266086</td>
+      <td>46.503051</td>
+      <td>47.062001</td>
+      <td>47.389175</td>
+      <td>46.796098</td>
+      <td>47.125589</td>
+      <td>47.184891</td>
+      <td>43.944859</td>
+      <td>47.525662</td>
+      <td>46.851818</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>43.084291</td>
+      <td>48.285125</td>
+      <td>49.403909</td>
+      <td>49.582269</td>
+      <td>48.694210</td>
+      <td>49.423329</td>
+      <td>48.981377</td>
+      <td>42.531957</td>
+      <td>49.444904</td>
+      <td>48.689881</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>42.064317</td>
+      <td>50.094055</td>
+      <td>51.296397</td>
+      <td>52.399974</td>
+      <td>50.933018</td>
+      <td>51.359742</td>
+      <td>51.051160</td>
+      <td>41.495061</td>
+      <td>51.442472</td>
+      <td>50.779059</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>40.716325</td>
+      <td>52.157049</td>
+      <td>53.197691</td>
+      <td>54.920935</td>
+      <td>53.644087</td>
+      <td>54.364417</td>
+      <td>53.223026</td>
+      <td>40.238325</td>
+      <td>54.037882</td>
+      <td>53.170334</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>39.939528</td>
+      <td>54.287674</td>
+      <td>55.715252</td>
+      <td>57.678982</td>
+      <td>56.731968</td>
+      <td>57.482574</td>
+      <td>55.462490</td>
+      <td>38.974300</td>
+      <td>56.166123</td>
+      <td>55.432935</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>38.769339</td>
+      <td>56.769517</td>
+      <td>58.299397</td>
+      <td>60.994507</td>
+      <td>59.559509</td>
+      <td>59.809063</td>
+      <td>58.122548</td>
+      <td>38.703137</td>
+      <td>59.826738</td>
+      <td>57.713531</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>37.816839</td>
+      <td>58.827548</td>
+      <td>60.742461</td>
+      <td>63.371686</td>
+      <td>62.685087</td>
+      <td>62.420615</td>
+      <td>60.103457</td>
+      <td>37.451996</td>
+      <td>62.440699</td>
+      <td>60.089372</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>36.958001</td>
+      <td>61.467895</td>
+      <td>63.162824</td>
+      <td>66.068580</td>
+      <td>65.600754</td>
+      <td>65.052675</td>
+      <td>63.045537</td>
+      <td>36.574081</td>
+      <td>65.356386</td>
+      <td>62.916692</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>36.236114</td>
+      <td>64.132421</td>
+      <td>65.755562</td>
+      <td>70.662958</td>
+      <td>69.265506</td>
+      <td>68.084082</td>
+      <td>66.258529</td>
+      <td>34.955595</td>
+      <td>68.438310</td>
+      <td>65.960888</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Grab final tumor size
+final_tumor_size = unstack_tumor.iloc[9,[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]]
+final_tumor_size
+```
+
+
+
+
+    Drug
+    Capomulin    36.236114
+    Ceftamin     64.132421
+    Infubinol    65.755562
+    Ketapril     70.662958
+    Naftisol     69.265506
+    Placebo      68.084082
+    Propriva     66.258529
+    Ramicane     34.955595
+    Stelasyn     68.438310
+    Zoniferol    65.960888
+    Name: 45, dtype: float64
+
+
+
+
+```python
+# Create dataframe
+tum_vol_chg = pd.DataFrame(final_tumor_size)
+
+# Rename column
+tum_vol_chg = tum_vol_chg.rename(columns={45: 'Final Tumor Size'})
+
+# Calculate percent change and add to dataframe
+tum_vol_chg['% Tumor Volume Change'] = (tum_vol_chg['Final Tumor Size'] - 45)/45*100
+
+# Drop final tumor size column
+tum_vol_chg = tum_vol_chg.drop('Final Tumor Size', axis=1)
+
+# Add if positive column for bar chart coloring
+tum_vol_chg['Positive?'] = tum_vol_chg['% Tumor Volume Change'] > 0
+tum_vol_chg
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>% Tumor Volume Change</th>
+      <th>Positive?</th>
+    </tr>
+    <tr>
+      <th>Drug</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Capomulin</th>
+      <td>-19.475303</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>Ceftamin</th>
+      <td>42.516492</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Infubinol</th>
+      <td>46.123472</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Ketapril</th>
+      <td>57.028795</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Naftisol</th>
+      <td>53.923347</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Placebo</th>
+      <td>51.297960</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Propriva</th>
+      <td>47.241175</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Ramicane</th>
+      <td>-22.320900</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>Stelasyn</th>
+      <td>52.085134</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>Zoniferol</th>
+      <td>46.579751</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Create list of % tumor volume change of several drugs
+drugs = [tum_vol_chg['% Tumor Volume Change'][0], tum_vol_chg['% Tumor Volume Change'][1], 
+         tum_vol_chg['% Tumor Volume Change'][2], tum_vol_chg['% Tumor Volume Change'][3]]
+x_axis = np.arange(len(drugs))
+
+# Set figure size
+plt.figure(figsize=(8, 5))
+
+# Plot bars
+plt.bar(x_axis, drugs, color=tum_vol_chg['Positive?'].map({True: 'r', False: 'g'}), 
+        edgecolor='black', alpha=1, align="edge")
+
+# Place tick locations and label
+tick_locations = [value+0.4 for value in x_axis]
+plt.xticks(tick_locations, ["Capomulin", "Ceftamin", "Infubinol", "Ketapril"])
+
+# Set the x and y limits
+plt.xlim(-0.25, len(x_axis))
+plt.ylim(-25, max(drugs)+10)
+
+# Draw horizontal line
+plt.axhline(y=0, xmin=0, xmax=1, linestyle='-', color='black')
+
+# Give our chart some labels and a tile
+plt.title("Tumor Change Over 45 Day Treatment")
+plt.xlabel("Drug")
+plt.ylabel("% Tumor Volume Change")
+
+# Insert grid lines and set behind plot elements
+ax = plt.gca()
+ax.grid(linestyle='--')
+ax.grid(color='black', alpha=0.7)
+ax.set_axisbelow(True)
+
+# Tumor Change Over 45 Day Treatment
+plt.savefig('images/percTumorChange.png')
+plt.show()
+```
+
+
+![png](output_30_0.png)
+
