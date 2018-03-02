@@ -1,4 +1,9 @@
 
+# Observable Trends
+###### 1. Out of the 10 drugs tested in the clinical trial, only 2 showed positive results. Both Capomulin and Ramicane reduced tumor volume over 45 days of treatment.
+###### 2. Some metastatic spread rates were lower than than others. Overall, some drugs can help reduce metastasis.
+###### 3. All drugs had positive percent change in volume except Capomulin and Ramicane. Capomulin had an average of -19.5% change in volume and Ramican had an average of -22.3%.
+
 
 ```python
 # Import dependencies
@@ -865,6 +870,15 @@ unstack_tumor
 
 
 ```python
+# Grab sem tumor volume
+sem_tumor = group_time_drug['Tumor Volume (mm3)'].sem()
+
+# unstack by timepoint
+unstack_sem_tumor = sem_tumor.unstack()
+```
+
+
+```python
 # Create x and y axes
 time = np.arange(0, 50, 5)
 capomulin = unstack_tumor['Capomulin']
@@ -876,10 +890,26 @@ placebo = unstack_tumor['Placebo']
 plt.figure(figsize=(8, 5))
 
 # Plot the charts and apply some styling
-cap_tum, = plt.plot(time, capomulin, color="red", marker='o', linestyle='--', label="Capomulin")
-inf_tum, = plt.plot(time, infubinol, color="blue", marker='^', linestyle='--', label="Infubinol")
-ket_tum, = plt.plot(time, ketapril, color="green", marker='s', linestyle='--', label="Ketapril")
-pla_tum, = plt.plot(time, placebo, color="black", marker='d', linestyle='--', label="Placebo")
+# cap_tum, = plt.plot(time, capomulin, color="red", marker='o', linestyle='--', label="Capomulin")
+# inf_tum, = plt.plot(time, infubinol, color="blue", marker='^', linestyle='--', label="Infubinol")
+# ket_tum, = plt.plot(time, ketapril, color="green", marker='s', linestyle='--', label="Ketapril")
+# pla_tum, = plt.plot(time, placebo, color="black", marker='d', linestyle='--', label="Placebo")
+
+# Create x and y axes for error bars
+sem_capomulin = unstack_sem_tumor['Capomulin']
+sem_infubinol = unstack_sem_tumor['Infubinol']
+sem_ketapril = unstack_sem_tumor['Ketapril']
+sem_placebo = unstack_sem_tumor['Placebo']
+
+# Plot standard error bars
+cap_tum = plt.errorbar(time, capomulin, yerr=sem_capomulin, fmt="o", color="red",
+                       capsize=3, linestyle='--', alpha=1, label="Capomulin")
+inf_tum = plt.errorbar(time, infubinol, yerr=sem_infubinol, fmt="^", color="blue", 
+                       capsize=3, linestyle='--', alpha=1, label="Infubinol")
+ket_tum = plt.errorbar(time, ketapril, yerr=sem_ketapril, fmt="s", color="green", 
+                       capsize=3, linestyle='--', alpha=1, label="Ketapril")
+pla_tum = plt.errorbar(time, placebo, yerr=sem_placebo, fmt="d", color="black", 
+                       capsize=3, linestyle='--', alpha=1, label="Placebo")
 
 # Set the limits for the X and Y axes
 plt.xlim(0,45)
@@ -1177,6 +1207,15 @@ unstack_meta
 
 
 ```python
+# Grab sem tumor volume
+sem_meta = group_time_drug['Metastatic Sites'].sem()
+
+# unstack by timepoint
+unstack_sem_meta = sem_meta.unstack()
+```
+
+
+```python
 # Create x and y axes
 time = np.arange(0, 50, 5)
 capomulin = unstack_meta['Capomulin']
@@ -1188,10 +1227,26 @@ placebo = unstack_meta['Placebo']
 plt.figure(figsize=(8, 5))
 
 # Plot the charts and apply some styling
-cap_met, = plt.plot(time, capomulin, color="red", marker='o', linestyle='--', label="Capomulin")
-inf_met, = plt.plot(time, infubinol, color="blue", marker='^', linestyle='--', label="Infubinol")
-ket_met, = plt.plot(time, ketapril, color="green", marker='s', linestyle='--', label="Ketapril")
-pla_met, = plt.plot(time, placebo, color="black", marker='d', linestyle='--', label="Placebo")
+# cap_met, = plt.plot(time, capomulin, color="red", marker='o', linestyle='--', label="Capomulin")
+# inf_met, = plt.plot(time, infubinol, color="blue", marker='^', linestyle='--', label="Infubinol")
+# ket_met, = plt.plot(time, ketapril, color="green", marker='s', linestyle='--', label="Ketapril")
+# pla_met, = plt.plot(time, placebo, color="black", marker='d', linestyle='--', label="Placebo")
+
+# Create x and y axes for error bars
+sem_capomulin = unstack_sem_meta['Capomulin']
+sem_infubinol = unstack_sem_meta['Infubinol']
+sem_ketapril = unstack_sem_meta['Ketapril']
+sem_placebo = unstack_sem_meta['Placebo']
+
+# Plot standard error bars
+cap_met = plt.errorbar(time, capomulin, yerr=sem_capomulin, fmt="o", color="red",
+                       capsize=3, linestyle='--', alpha=1, label="Capomulin")
+inf_met = plt.errorbar(time, infubinol, yerr=sem_infubinol, fmt="^", color="blue", 
+                       capsize=3, linestyle='--', alpha=1, label="Infubinol")
+ket_met = plt.errorbar(time, ketapril, yerr=sem_ketapril, fmt="s", color="green", 
+                       capsize=3, linestyle='--', alpha=1, label="Ketapril")
+pla_met = plt.errorbar(time, placebo, yerr=sem_placebo, fmt="d", color="black", 
+                       capsize=3, linestyle='--', alpha=1, label="Placebo")
 
 # Set the limits for the X and Y axes
 plt.xlim(0,45)
@@ -1856,19 +1911,23 @@ tum_vol_chg
 ```python
 # Create list of % tumor volume change of several drugs
 drugs = [tum_vol_chg['% Tumor Volume Change'][0], tum_vol_chg['% Tumor Volume Change'][1], 
-         tum_vol_chg['% Tumor Volume Change'][2], tum_vol_chg['% Tumor Volume Change'][3]]
+         tum_vol_chg['% Tumor Volume Change'][2], tum_vol_chg['% Tumor Volume Change'][3], 
+         tum_vol_chg['% Tumor Volume Change'][4], tum_vol_chg['% Tumor Volume Change'][5], 
+         tum_vol_chg['% Tumor Volume Change'][6], tum_vol_chg['% Tumor Volume Change'][7], 
+         tum_vol_chg['% Tumor Volume Change'][8], tum_vol_chg['% Tumor Volume Change'][9]]
 x_axis = np.arange(len(drugs))
 
 # Set figure size
-plt.figure(figsize=(8, 5))
+plt.figure(figsize=(20, 5))
 
 # Plot bars
-plt.bar(x_axis, drugs, color=tum_vol_chg['Positive?'].map({True: 'r', False: 'g'}), 
-        edgecolor='black', alpha=1, align="edge")
+tum_bar = plt.bar(x_axis, drugs, color=tum_vol_chg['Positive?'].map({True: 'r', False: 'g'}), 
+                  edgecolor='black', alpha=1, align="edge")
 
 # Place tick locations and label
 tick_locations = [value+0.4 for value in x_axis]
-plt.xticks(tick_locations, ["Capomulin", "Ceftamin", "Infubinol", "Ketapril"])
+plt.xticks(tick_locations, ["Capomulin", "Ceftamin", "Infubinol", "Ketapril", "Naftisol", 
+                            "Placebo", "Propriva", "Ramicane", "Stelasyn", "Zoniferol"])
 
 # Set the x and y limits
 plt.xlim(-0.25, len(x_axis))
@@ -1887,6 +1946,13 @@ ax = plt.gca()
 ax.grid(linestyle='--')
 ax.grid(color='black', alpha=0.7)
 ax.set_axisbelow(True)
+
+# Annotate bars
+perc_tum_vol_chg = [f'{chg:.1f}%' for chg in drugs]
+for i, rect in enumerate(tum_bar):
+    height = 0
+    plt.text(rect.get_x() + rect.get_width()/2.0, height, perc_tum_vol_chg[i], 
+             color='black', fontsize='13', ha='center', va='bottom')
 
 # Tumor Change Over 45 Day Treatment
 plt.savefig('images/percTumorChange.png')
